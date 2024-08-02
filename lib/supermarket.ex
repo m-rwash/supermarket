@@ -3,43 +3,36 @@ defmodule Supermarket do
   Documentation for `Supermarket`.
   """
 
-  alias Decimal, as: D
-  alias Supermarket.{Basket, Product}
-  alias Supermarket.Rules.RuleAgent
+  alias Supermarket.{Basket, BasketAgent, Checkout, Product, ProductAgent}
+  alias Supermarket.Rules.{Rule, RuleAgent}
 
-  @doc """
-  Calculate checkout price for passed basket
+  @spec list_rules() :: [Rule.t()]
+  def list_rules, do: RuleAgent.list_rules()
+  def add_rule(rule), do: RuleAgent.add_rule(rule)
+  @spec delete_rule(integer()) :: :ok
+  def delete_rule(id), do: RuleAgent.delete_rule(id)
 
-  ## Examples
+  @spec list_products() :: [Product.t()]
+  def list_products, do: ProductAgent.list_products()
+  @spec add_product(Product.t()) :: :ok
+  def add_product(product), do: ProductAgent.add_product(product)
+  @spec delete_product(String.t()) :: :ok
+  def delete_product(code), do: ProductAgent.delete_product(code)
 
-      iex> Supermarket.checkout(%Supermarket.Basket{id: 1, products: [%Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("2.4")}, %Supermarket.Product{code: "456", name: "Product_2", price: Decimal.new("3.5")}]})
-      "5.9"
-      iex> Supermarket.checkout(%Supermarket.Basket{id: 1, products: [%Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("2.5")}]})
-      "2.5"
-      iex> Supermarket.checkout(%Supermarket.Basket{id: 1, products: []})
-      "0"
-  """
-  @spec checkout(Basket.t()) :: String.t()
-  def checkout(%{products: products}) do
-    products
-    |> apply_rules()
-    |> Enum.reduce(D.new(0), fn product, acc -> D.add(acc, product.price) end)
-    |> D.to_string()
-  end
+  @spec list_baskets() :: [Basket.t()]
+  def list_baskets, do: BasketAgent.list_baskets()
+  @spec add_basket(Basket.t()) :: :ok
+  def add_basket(basket), do: BasketAgent.add_basket(basket)
+  @spec delete_basket(any()) :: :ok
+  def delete_basket(id), do: BasketAgent.delete_basket(id)
+  @spec add_product_to_basket(integer(), Product.t()) :: :ok
+  def add_product_to_basket(basket_id, product),
+    do: BasketAgent.add_product_to_basket(basket_id, product)
 
-  @spec apply_rules(list(Product.t())) :: list(Product.t())
-  defp apply_rules(products) do
-    rules = RuleAgent.list_rules()
+  @spec remove_product_from_basket(integer(), String.t()) :: :ok
+  def remove_product_from_basket(basket_id, product_code),
+    do: BasketAgent.remove_product_from_basket(basket_id, product_code)
 
-    discounted_basket =
-      Enum.reduce(rules, products, fn rule, acc ->
-        if rule.condition.(acc) do
-          rule.action.(acc)
-        else
-          acc
-        end
-      end)
-
-    discounted_basket
-  end
+  @spec checkout(Supermarket.Basket.t()) :: String.t()
+  def checkout(basket), do: Checkout.run(basket)
 end

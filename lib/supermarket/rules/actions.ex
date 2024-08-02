@@ -15,8 +15,8 @@ defmodule Supermarket.Rules.Actions do
       iex> action = Supermarket.Rules.Actions.buy_one_get_one_free("123")
       ...> action.([%Product{code: "123", name: "Product_1", price: D.new("5")}, %Supermarket.Product{code: "123", name: "Product_1", price: D.new("5")}])
       [
-        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("0")},
-        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("5")}
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("5")},
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("0")}
       ]
   """
 
@@ -76,9 +76,13 @@ defmodule Supermarket.Rules.Actions do
 
   @spec apply_buy_one_get_one_discount(list(Product.t())) :: list(Product.t())
   defp apply_buy_one_get_one_discount(products) do
-    Enum.map_every(products, 2, fn
-      nil -> nil
-      product -> %Product{product | price: D.new(0)}
+    Enum.with_index(products)
+    |> Enum.map(fn {product, index} ->
+      if rem(index, 2) == 1 do
+        %Product{product | price: D.new(0)}
+      else
+        product
+      end
     end)
   end
 

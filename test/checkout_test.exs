@@ -1,4 +1,4 @@
-defmodule SupermarketTest do
+defmodule Supermarket.CheckoutTest do
   @moduledoc false
   use ExUnit.Case
 
@@ -6,7 +6,7 @@ defmodule SupermarketTest do
 
   doctest Supermarket
 
-  describe "checkout/1" do
+  describe "run/1" do
     test "calculate checkout price for passed basket" do
       product_1 = %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("0.1")}
       product_2 = %Supermarket.Product{code: "456", name: "Product_2", price: Decimal.new("0.2")}
@@ -31,8 +31,9 @@ defmodule SupermarketTest do
     test "calculate checkout price for basket when rule buy_one_get_one_free applies" do
       product_1 = %Supermarket.Product{code: "A1", name: "Product_1", price: Decimal.new("4.5")}
       product_2 = %Supermarket.Product{code: "A1", name: "Product_1", price: Decimal.new("4.5")}
+      product_3 = %Supermarket.Product{code: "A1", name: "Product_1", price: Decimal.new("4.5")}
 
-      basket = %Supermarket.Basket{id: 1, products: [product_1, product_2]}
+      basket = %Supermarket.Basket{id: 1, products: [product_1, product_2, product_3]}
 
       RuleAgent.add_rule(%Rule{
         id: 1,
@@ -40,7 +41,7 @@ defmodule SupermarketTest do
         action: Actions.buy_one_get_one_free("A1")
       })
 
-      assert Supermarket.checkout(basket) == "4.5"
+      assert Supermarket.checkout(basket) == "9.0"
     end
 
     test "calculate checkout price for basket when rule discount_product_price applies" do

@@ -5,10 +5,15 @@ defmodule Supermarket.Rules.RuleAgentTest do
 
   alias Supermarket.Rules.{Rule, RuleAgent}
 
+  setup do
+    Agent.update(RuleAgent, fn _ -> [] end)
+    :ok
+  end
+
   test "add and list rules" do
     rule = %Rule{id: 1, condition: "condition", action: "action"}
     RuleAgent.add_rule(rule)
-    assert Enum.member?(RuleAgent.list_rules(), rule) == true
+    assert RuleAgent.list_rules() == [rule]
   end
 
   test "delete rule" do
