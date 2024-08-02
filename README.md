@@ -57,6 +57,7 @@
 3. Install dependencies by running `mix deps.get`
 4. Run tests `mix test`
 5. Start the interactive shell by running `iex -S mix`
+6. You can as well run `mix format.lint` to run credo checks
 
 ### Examples
 - Listing Products
