@@ -4,6 +4,7 @@ defmodule Supermarket.Rules.RuleAgent do
   """
   use Agent
 
+  alias Decimal, as: D
   alias Supermarket.Rules.{Actions, Conditions, Rule}
 
   @spec start_link(any()) :: {:ok, pid()} | {:error, any()}
@@ -13,6 +14,16 @@ defmodule Supermarket.Rules.RuleAgent do
         id: 1,
         condition: Conditions.buy_n_or_more("GR1", 2),
         action: Actions.buy_one_get_one_free("GR1")
+      },
+      %Rule{
+        id: 2,
+        condition: Conditions.buy_n_or_more("SR1", 3),
+        action: Actions.discount_product_price("SR1", D.new("4.5"))
+      },
+      %Rule{
+        id: 3,
+        condition: Conditions.buy_n_or_more("CF1", 3),
+        action: Actions.discount_two_thirds_product_price("CF1")
       }
     ]
 
