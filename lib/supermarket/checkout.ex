@@ -25,6 +25,7 @@ defmodule Supermarket.Checkout do
     products
     |> apply_rules()
     |> Enum.reduce(D.new(0), fn product, acc -> D.add(acc, product.price) end)
+    |> D.round(2)
     |> D.to_string()
   end
 

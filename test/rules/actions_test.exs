@@ -77,7 +77,7 @@ defmodule Supermarket.Rules.ActionsTest do
 
       assert MapSet.new(action.(basket.products)) ==
                MapSet.new([
-                 %Product{code: "C1", name: "Product_1", price: D.new("3.33")},
+                 %Product{code: "C1", name: "Product_1", price: D.new("3.3335")},
                  %Product{code: "C2", name: "Product_2", price: D.new("4")}
                ])
     end

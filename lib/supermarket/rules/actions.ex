@@ -5,7 +5,7 @@ defmodule Supermarket.Rules.Actions do
   alias Decimal, as: D
   alias Supermarket.Product
 
-  @two_thirds D.div(D.new(2), D.new(3))
+  @two_thirds D.new("0.6667")
 
   @doc """
   This function returns a function that will return a new list of products after applying buy one get one free.
@@ -60,8 +60,8 @@ defmodule Supermarket.Rules.Actions do
       iex> action = Supermarket.Rules.Actions.discount_two_thirds_product_price("123")
       ...> action.([%Product{code: "123", name: "Product_1", price: D.new("5")}, %Product{code: "123", name: "Product_1", price: D.new("5")}])
       [
-        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("3.33")},
-        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("3.33")}
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("3.3335")},
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("3.3335")}
       ]
   """
   @spec discount_two_thirds_product_price(String.t()) :: (list(Product.t()) -> list(Product.t()))
@@ -69,7 +69,7 @@ defmodule Supermarket.Rules.Actions do
     fn basket ->
       Enum.map(
         basket,
-        &update_product_price(&1, product_code, D.mult(&1.price, @two_thirds) |> D.round(2))
+        &update_product_price(&1, product_code, D.mult(&1.price, @two_thirds))
       )
     end
   end

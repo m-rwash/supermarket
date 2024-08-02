@@ -12,20 +12,20 @@ defmodule Supermarket.CheckoutTest do
       product_2 = %Supermarket.Product{code: "456", name: "Product_2", price: Decimal.new("0.2")}
       basket = %Supermarket.Basket{id: 1, products: [product_1, product_2]}
 
-      assert Supermarket.checkout(basket) == "0.3"
+      assert Supermarket.checkout(basket) == "0.30"
     end
 
     test "calculate checkout price for empty basket" do
       basket = %Supermarket.Basket{id: 1, products: []}
 
-      assert Supermarket.checkout(basket) == "0"
+      assert Supermarket.checkout(basket) == "0.00"
     end
 
     test "calculate checkout price for basket with one product" do
       product = %Supermarket.Product{code: "123", name: "Product", price: Decimal.new("0.1")}
       basket = %Supermarket.Basket{id: 1, products: [product]}
 
-      assert Supermarket.checkout(basket) == "0.1"
+      assert Supermarket.checkout(basket) == "0.10"
     end
 
     test "calculate checkout price for basket when rule buy_one_get_one_free applies" do
@@ -41,7 +41,7 @@ defmodule Supermarket.CheckoutTest do
         action: Actions.buy_one_get_one_free("A1")
       })
 
-      assert Supermarket.checkout(basket) == "9.0"
+      assert Supermarket.checkout(basket) == "9.00"
     end
 
     test "calculate checkout price for basket when rule discount_product_price applies" do
@@ -56,7 +56,7 @@ defmodule Supermarket.CheckoutTest do
         action: Actions.discount_product_price("B1", Decimal.new("3.5"))
       })
 
-      assert Supermarket.checkout(basket) == "7.0"
+      assert Supermarket.checkout(basket) == "7.00"
     end
 
     test "calculate checkout price for basket when rule discount_product_price_two_thirds applies" do
