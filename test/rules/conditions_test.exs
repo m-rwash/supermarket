@@ -1,4 +1,4 @@
-defmodule Supermarket.ConditionsTest do
+defmodule Supermarket.Rules.ConditionsTest do
   @moduledoc false
 
   use ExUnit.Case

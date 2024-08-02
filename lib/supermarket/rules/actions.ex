@@ -1,4 +1,4 @@
-defmodule Supermarket.Actions do
+defmodule Supermarket.Rules.Actions do
   @moduledoc """
   This module defines possible actions for rules that can be applied to a basket i.e. buy one get one free.
   """

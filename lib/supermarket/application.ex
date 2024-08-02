@@ -2,14 +2,14 @@ defmodule Supermarket.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
+  alias Supermarket.Rules.RuleAgent
 
   use Application
 
   @impl true
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: Supermarket.Worker.start_link(arg)
-      # {Supermarket.Worker, arg}
+      RuleAgent
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

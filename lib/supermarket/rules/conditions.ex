@@ -1,4 +1,4 @@
-defmodule Supermarket.Conditions do
+defmodule Supermarket.Rules.Conditions do
   @moduledoc """
   This module defines possible conditions for rules that can be applied to a basket i.e. buy 3 or more products.
   """
