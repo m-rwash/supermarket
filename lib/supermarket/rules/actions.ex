@@ -5,16 +5,18 @@ defmodule Supermarket.Rules.Actions do
   alias Decimal, as: D
   alias Supermarket.Product
 
+  @two_thirds D.div(D.new(2), D.new(3))
+
   @doc """
   This function returns a function that will return a new list of products after applying buy one get one free.
 
   ## Examples
 
       iex> action = Supermarket.Rules.Actions.buy_one_get_one_free("123")
-      ...> action.([%Product{code: "123", name: "Product_1", price: Decimal.new("5")}, %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("5")}])
+      ...> action.([%Product{code: "123", name: "Product_1", price: D.new("5")}, %Supermarket.Product{code: "123", name: "Product_1", price: D.new("5")}])
       [
-        %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("0")},
-        %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("5")}
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("0")},
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("5")}
       ]
   """
 
@@ -34,19 +36,41 @@ defmodule Supermarket.Rules.Actions do
 
   ## Examples
 
-      iex> action = Supermarket.Rules.Actions.discount_product_price("123", Decimal.new("2"))
-      ...> action.([%Product{code: "123", name: "Product_1", price: Decimal.new("5")}, %Product{code: "123", name: "Product_1", price: Decimal.new("5")}])
+      iex> action = Supermarket.Rules.Actions.discount_product_price("123", D.new("2"))
+      ...> action.([%Product{code: "123", name: "Product_1", price: D.new("5")}, %Product{code: "123", name: "Product_1", price: D.new("5")}])
       [
-        %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("2")},
-        %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("2")}
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("2")},
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("2")}
       ]
   """
 
-  @spec discount_product_price(String.t(), Decimal.t()) :: (list(Product.t()) ->
-                                                              list(Product.t()))
+  @spec discount_product_price(String.t(), D.t()) :: (list(Product.t()) ->
+                                                        list(Product.t()))
   def discount_product_price(product_code, new_price) do
     fn basket ->
       Enum.map(basket, &update_product_price(&1, product_code, D.new(new_price)))
+    end
+  end
+
+  @doc """
+  This function returns a function that will return a new list of products with discounting the price to two thirds of passed product code.
+
+  ## Examples
+
+      iex> action = Supermarket.Rules.Actions.discount_two_thirds_product_price("123")
+      ...> action.([%Product{code: "123", name: "Product_1", price: D.new("5")}, %Product{code: "123", name: "Product_1", price: D.new("5")}])
+      [
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("3.33")},
+        %Supermarket.Product{code: "123", name: "Product_1", price: D.new("3.33")}
+      ]
+  """
+  @spec discount_two_thirds_product_price(String.t()) :: (list(Product.t()) -> list(Product.t()))
+  def discount_two_thirds_product_price(product_code) do
+    fn basket ->
+      Enum.map(
+        basket,
+        &update_product_price(&1, product_code, D.mult(&1.price, @two_thirds) |> D.round(2))
+      )
     end
   end
 
@@ -58,7 +82,7 @@ defmodule Supermarket.Rules.Actions do
     end)
   end
 
-  @spec update_product_price(Product.t(), String.t(), Decimal.t()) :: Product.t()
+  @spec update_product_price(Product.t(), String.t(), D.t()) :: Product.t()
   defp update_product_price(product, product_code, new_price) do
     if product.code == product_code do
       %Product{product | price: new_price}

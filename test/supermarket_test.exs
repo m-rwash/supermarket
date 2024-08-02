@@ -57,5 +57,20 @@ defmodule SupermarketTest do
 
       assert Supermarket.checkout(basket) == "7.0"
     end
+
+    test "calculate checkout price for basket when rule discount_product_price_two_thirds applies" do
+      product_1 = %Supermarket.Product{code: "C1", name: "Product_1", price: Decimal.new("4.5")}
+      product_2 = %Supermarket.Product{code: "C1", name: "Product_1", price: Decimal.new("4.5")}
+
+      basket = %Supermarket.Basket{id: 1, products: [product_1, product_2]}
+
+      RuleAgent.add_rule(%Rule{
+        id: 1,
+        condition: Conditions.buy_n_or_more("C1", 2),
+        action: Actions.discount_two_thirds_product_price("C1")
+      })
+
+      assert Supermarket.checkout(basket) == "6.00"
+    end
   end
 end
