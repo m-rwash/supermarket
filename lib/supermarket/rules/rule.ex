@@ -8,8 +8,8 @@ defmodule Supermarket.Rules.Rule do
 
   ## Examples
 
-      iex> %Supermarket.Rule{id: 1, condition: "condition", action: "action"}
-      %Supermarket.Rule{id: 1, condition: "condition", action: "action"}
+      iex> %Supermarket.Rules.Rule{id: 1, condition: "condition", action: "action"}
+      %Supermarket.Rules.Rule{id: 1, condition: "condition", action: "action"}
   """
 
   @type t :: %__MODULE__{id: integer(), condition: fun(), action: fun()}

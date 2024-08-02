@@ -28,19 +28,34 @@ defmodule SupermarketTest do
       assert Supermarket.checkout(basket) == "0.1"
     end
 
-    test "calculate checkout price for basket when rule applies" do
-      product_1 = %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("4.5")}
-      product_2 = %Supermarket.Product{code: "123", name: "Product_1", price: Decimal.new("4.5")}
+    test "calculate checkout price for basket when rule buy_one_get_one_free applies" do
+      product_1 = %Supermarket.Product{code: "A1", name: "Product_1", price: Decimal.new("4.5")}
+      product_2 = %Supermarket.Product{code: "A1", name: "Product_1", price: Decimal.new("4.5")}
 
       basket = %Supermarket.Basket{id: 1, products: [product_1, product_2]}
 
       RuleAgent.add_rule(%Rule{
         id: 1,
-        condition: Conditions.buy_n_or_more("123", 2),
-        action: Actions.buy_one_get_one_free("123")
+        condition: Conditions.buy_n_or_more("A1", 2),
+        action: Actions.buy_one_get_one_free("A1")
       })
 
       assert Supermarket.checkout(basket) == "4.5"
+    end
+
+    test "calculate checkout price for basket when rule discount_product_price applies" do
+      product_1 = %Supermarket.Product{code: "B1", name: "Product_1", price: Decimal.new("4.5")}
+      product_2 = %Supermarket.Product{code: "B1", name: "Product_1", price: Decimal.new("4.5")}
+
+      basket = %Supermarket.Basket{id: 1, products: [product_1, product_2]}
+
+      RuleAgent.add_rule(%Rule{
+        id: 1,
+        condition: Conditions.buy_n_or_more("B1", 2),
+        action: Actions.discount_product_price("B1", Decimal.new("3.5"))
+      })
+
+      assert Supermarket.checkout(basket) == "7.0"
     end
   end
 end

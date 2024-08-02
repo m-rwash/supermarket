@@ -10,7 +10,7 @@ defmodule Supermarket.Rules.Conditions do
 
   ## Examples
 
-      iex> condition = Supermarket.Conditions.buy_n_or_more("123", 2)
+      iex> condition = Supermarket.Rules.Conditions.buy_n_or_more("123", 2)
       ...> condition.([%Product{code: "123", name: "Product_1", price: Decimal.new("5")}, %Product{code: "123", name: "Product_1", price: Decimal.new("5")}])
       true
   """
